@@ -60,8 +60,6 @@ def send_email(recipients: str = 'kevinlinsk19@gmail.com'):
 @app.post('/api/v3/alert')
 async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gmail.com'):
 
-    time.sleep(5)
-    print("post image start")
     contents = await file.read()
     nparr = np.fromstring(contents, np.uint8)
     ori_img = cv.imdecode(nparr, cv.IMREAD_COLOR)
@@ -73,6 +71,9 @@ async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk
     content["to"] = (', ').join(recipients.split(',')) #收件者
     content.attach(MIMEText("你違規了來自AI"))  #郵件內容
     # content.attach(MIMEImage(result))  # 郵件圖片內容
+
+    time.sleep(5)
+    print("post image start")
     with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
         try:
             smtp.ehlo()  # 驗證SMTP伺服器
