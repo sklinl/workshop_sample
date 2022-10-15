@@ -64,15 +64,15 @@ async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk
     print("post image start")
     contents = await file.read()
     nparr = np.fromstring(contents, np.uint8)
-    result = cv.imdecode(nparr, cv.IMREAD_COLOR)
-    # result = det.predict(result)
+    file = cv.imdecode(nparr, cv.IMREAD_COLOR)
+    # file = det.predict(file)
 
     content = MIMEMultipart()  #建立MIMEMultipart物件
     content["subject"] = "[ALARM] Please check it for more detail"  #郵件標題
     content["from"] = "kevinlinsk19@gmail.com"  #寄件者
     content["to"] = (', ').join(recipients.split(',')) #收件者
     content.attach(MIMEText("你違規了來自AI"))  #郵件內容
-    content.attach(MIMEImage(result))  # 郵件圖片內容
+    content.attach(MIMEImage(file))  # 郵件圖片內容
     with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
         try:
             smtp.ehlo()  # 驗證SMTP伺服器
@@ -85,7 +85,7 @@ async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk
         except Exception as e:
             print("Error message: ", e)
 
-    return Response(content=result, media_type="image/png")
+    return Response(content=file, media_type="image/png")
 
 if __name__ == '__main__':
     uvicorn.run('main:app', reload=True)
