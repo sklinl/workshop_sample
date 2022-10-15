@@ -72,8 +72,7 @@ async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk
     content.attach(MIMEText("你違規了來自AI"))  #郵件內容
     # content.attach(MIMEImage(result))  # 郵件圖片內容
 
-    time.sleep(5)
-    print("post image start")
+
     with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
         try:
             smtp.ehlo()  # 驗證SMTP伺服器
@@ -86,6 +85,8 @@ async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk
         except Exception as e:
             print("Error message: ", e)
 
+    time.sleep(10)
+    print("return message")
     # return Response(content=result, media_type="image/png")
     return 'ok'
 
