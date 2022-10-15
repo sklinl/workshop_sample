@@ -58,21 +58,21 @@ def send_email(recipients: str = 'kevinlinsk19@gmail.com'):
 
 
 @app.post('/api/v3/alert')
-def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gmail.com'):
+async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gmail.com'):
 
     time.sleep(5)
     print("post image start")
-    contents = file.read()
+    contents = await file.read()
     nparr = np.fromstring(contents, np.uint8)
-    file = cv.imdecode(nparr, cv.IMREAD_COLOR)
-    # file = det.predict(file)
+    ori_img = cv.imdecode(nparr, cv.IMREAD_COLOR)
+    # result = det.predict(ori_img)
 
     content = MIMEMultipart()  #建立MIMEMultipart物件
     content["subject"] = "[ALARM] Please check it for more detail"  #郵件標題
     content["from"] = "kevinlinsk19@gmail.com"  #寄件者
     content["to"] = (', ').join(recipients.split(',')) #收件者
     content.attach(MIMEText("你違規了來自AI"))  #郵件內容
-    content.attach(MIMEImage(file))  # 郵件圖片內容
+    # content.attach(MIMEImage(result))  # 郵件圖片內容
     with smtplib.SMTP(host="smtp.gmail.com", port="587") as smtp:  # 設定SMTP伺服器
         try:
             smtp.ehlo()  # 驗證SMTP伺服器
@@ -85,7 +85,8 @@ def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gma
         except Exception as e:
             print("Error message: ", e)
 
-    return Response(content=file, media_type="image/png")
+    # return Response(content=result, media_type="image/png")
+    return 'ok'
 
 if __name__ == '__main__':
     uvicorn.run('main:app', reload=True)
