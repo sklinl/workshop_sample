@@ -58,11 +58,11 @@ def send_email(recipients: str = 'kevinlinsk19@gmail.com'):
 
 
 @app.post('/api/v3/alert')
-async def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gmail.com'):
+def post_image(file: UploadFile = File(...), recipients: str = 'kevinlinsk19@gmail.com'):
 
     time.sleep(5)
     print("post image start")
-    contents = await file.read()
+    contents = file.read()
     nparr = np.fromstring(contents, np.uint8)
     file = cv.imdecode(nparr, cv.IMREAD_COLOR)
     # file = det.predict(file)
